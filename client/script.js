@@ -10,3 +10,7 @@ function cellClick(cellId) {
 ws.onmessage = function(e) {
     console.log(e);
 }
+
+ws.onclose = function(e) {
+    console.log(e);
+}
