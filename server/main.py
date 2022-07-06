@@ -12,7 +12,11 @@ class ConnectionManager():
     
     async def connect(self, websocket: WebSocket) -> None:
         await websocket.accept()
-        self.active_connections.append(websocket)
+
+        if len(self.active_connections) == 2:
+            await websocket.close(4000)
+        else:
+            self.active_connections.append(websocket)
     
     def disconnect(self, websocket: WebSocket) -> None:
         self.active_connections.remove(websocket)
