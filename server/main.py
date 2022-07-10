@@ -15,8 +15,28 @@ class ConnectionManager():
 
         if len(self.active_connections) == 2:
             await websocket.close(4000)
-        else:
-            self.active_connections.append(websocket)
+            return
+        
+        self.active_connections.append(websocket)
+
+        if len(self.active_connections) == 1:
+            await websocket.send_json({
+                'init': True,
+                'player': 'x',
+                'info': 'Waiting for second player.'
+            })
+        elif len(self.active_connections) == 2:
+            await websocket.send_json({
+                'init': True,
+                'player': 'o',
+                'info': ''
+            })
+
+            await self.active_connections[0].send_json({
+                'init': True,
+                'player': 'x',
+                'info': 'Your turn.'
+            })
     
     def disconnect(self, websocket: WebSocket) -> None:
         self.active_connections.remove(websocket)
